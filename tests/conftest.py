@@ -116,6 +116,7 @@ def app_ctx():
         app.extensions['whooshee']['index_path_root'] = _whoosh_dir
         app.extensions['whooshee']['whoosheers_indexes'] = {}
         db.create_all()
+        _fs.whooshee.reindex()
         yield
         db.session.remove()
         db.drop_all()
@@ -137,6 +138,7 @@ def client():
         app.extensions['whooshee']['index_path_root'] = _whoosh_dir
         app.extensions['whooshee']['whoosheers_indexes'] = {}
         db.create_all()
+        _fs.whooshee.reindex()
         yield app.test_client()
         db.session.remove()
         db.drop_all()
@@ -160,6 +162,7 @@ def seeded_client(_seeded_db_path):
         app.extensions['whooshee']['index_path_root'] = _whoosh_dir
         app.extensions['whooshee']['whoosheers_indexes'] = {}
         db.create_all()
+        _fs.whooshee.reindex()
         yield app.test_client()
         db.session.remove()
         db.drop_all()
@@ -219,6 +222,16 @@ def assert_ok(client, path, methods=None, data=None, code=None):
 def assert_ok_or_redirect(client, path):
     """GET a path, assert 200 or 302."""
     assert_ok(client, path, code={200, 302})
+
+
+def _min_pdf(text="dummy"):
+    """Return a minimal valid PDF as bytes. Uses pymupdf internally."""
+    import pymupdf
+
+    doc = pymupdf.open()
+    page = doc.new_page()
+    page.insert_text((100, 100), text, fontname="helv", fontsize=12)
+    return doc.write()
 
 
 @pytest.fixture
