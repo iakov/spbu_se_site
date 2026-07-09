@@ -225,13 +225,19 @@ def assert_ok_or_redirect(client, path):
 
 
 def _min_pdf(text="dummy"):
-    """Return a minimal valid PDF as bytes. Uses pymupdf internally."""
-    import pymupdf
-
-    doc = pymupdf.open()
-    page = doc.new_page()
-    page.insert_text((100, 100), text, fontname="helv", fontsize=12)
-    return doc.write()
+    """Return a minimal valid PDF as bytes. Self-contained, no external deps."""
+    import struct, zlib
+    contents = b"BT /F1 12 Tf 100 700 Td (" + text.encode() + b") Tj ET"
+    compressed = zlib.compress(contents)
+    objs = [
+        b"1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj",
+        b"2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj",
+        b"3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> >>\nendobj",
+        b"4 0 obj\n<< /Length " + str(len(compressed)).encode() + b" /Filter /FlateDecode >>\nstream\n" + compressed + b"\nendstream\nendobj",
+    ]
+    body = b"\n".join(objs)
+    pdf = b"%PDF-1.4\n" + body + b"\ntrailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n9\n%%EOF"
+    return pdf
 
 
 @pytest.fixture
