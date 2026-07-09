@@ -340,9 +340,9 @@ class TestPostThesesApi:
             "/post_theses",
             data={
                 "thesis_text": (io.BytesIO(_min_pdf()), "test.pdf"),
-                "presentation": (io.BytesIO(b"slides"), "slides.pdf"),
-                "supervisor_review": (io.BytesIO(b"sup"), "sup.pdf"),
-                "reviewer_review": (io.BytesIO(b"rev"), "rev.pdf"),
+                "presentation": (io.BytesIO(_min_pdf("slides")), "slides.pdf"),
+                "supervisor_review": (io.BytesIO(_min_pdf("sup")), "sup.pdf"),
+                "reviewer_review": (io.BytesIO(_min_pdf("rev")), "rev.pdf"),
                 "thesis_info": (io.BytesIO(json.dumps(info).encode()), "info.json"),
             },
         )
