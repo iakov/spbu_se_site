@@ -441,6 +441,7 @@ See `docs/QUALITY_MANAGEMENT.md` for quality philosophy and policy.
 | `pytest` | Test suite | CI | `-n auto` (xdist) | ✅ |
 | `coverage` | Code coverage | CI (via pytest) | `--cov=src --cov-fail-under=80` | ✅ |
 | `pylint` (similarities) | Code duplicate detection | CI (lint job) | `--disable=all --enable=similarities src/ tests/` | ✅ |
+| `scripts/find_dup_coverage.py` | Coverage-based duplicate test detection | Manual (advisory) | Requires `coverage run --context=test` first | ✅ |
 
 ### Proposed tools (agent suggested, user may adopt)
 

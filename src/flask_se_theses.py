@@ -13,6 +13,7 @@ from flask import jsonify, redirect, render_template, request, url_for
 from transliterate import translit
 
 from flask_se_config import SECRET_KEY_THESIS, type_id_string
+from flask_se_practice_config import _paginate
 from se_forms import ThesisFilter
 from se_models import Courses, Staff, Thesis, Users, Worktype, db
 
@@ -141,13 +142,9 @@ def fetch_theses():
             supervisor = 0
 
     if worktype > 1:
-        records = records.filter_by(type_id=worktype).paginate(
-            per_page=10,
-            page=page,
-            error_out=False,
-        )
+        records = _paginate(records.filter_by(type_id=worktype), page)
     else:
-        records = records.paginate(per_page=10, page=page, error_out=False)
+        records = _paginate(records, page)
 
     if len(records.items):
         first_priority = []

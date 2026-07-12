@@ -278,3 +278,21 @@ def _assert_seeded_tables():
 
 def _approve_temp_thesis(client, thesis_id):
     return client.get(f"/theses_add_tmp?thesis_id={thesis_id}")
+
+
+def _make_temp_thesis(author: str = "T", text_uri: str | None = None, name_ru: str | None = None):
+    from se_models import Thesis, db
+
+    t = Thesis(
+        name_ru=name_ru or ("ApproveMe" if author == "T" else "Temp Thesis"),
+        author=author,
+        type_id=2,
+        course_id=1,
+        publish_year=2024,
+        temporary=True,
+    )
+    if text_uri:
+        t.text_uri = text_uri
+    db.session.add(t)
+    db.session.commit()
+    return t

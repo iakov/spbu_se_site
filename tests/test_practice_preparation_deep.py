@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=duplicate-code
 import io
 
 import pytest

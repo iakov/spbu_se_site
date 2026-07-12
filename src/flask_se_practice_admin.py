@@ -2,7 +2,6 @@
 """Copyright 2023 Alexander Slugin.
 
 Licensed under the Apache License, Version 2.0 (the "License");
-# pylint: disable=duplicate-code
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -37,6 +36,8 @@ from flask_se_practice_config import (
     TABLE_COLUMNS,
     TEXT_UPLOAD_FOLDER,
     TypeOfFile,
+    _add_notification,
+    _check_notification_or_redirect,
     get_filename,
 )
 from flask_se_practice_table import edit_table
@@ -277,12 +278,9 @@ def thesis_admin():
 
     if request.method == "POST":
         if "submit_notification_button" in request.form:
-            if request.form["content"] in {None, ""}:
-                flash(
-                    "Нельзя отправить пустое уведомление!",
-                    category="error",
-                )
-                return redirect(url_for("thesis_staff", id=current_thesis.id))
+            resp = _check_notification_or_redirect(current_thesis)
+            if resp:
+                return resp
 
             mail_notification = render_template(
                 NotificationTemplates.NOTIFICATION_FROM_CURATOR.value,
@@ -301,13 +299,7 @@ def thesis_admin():
                 f'отправил Вам уведомление по работе "{current_thesis.title}": '
                 f"{request.form['content']}"
             )
-            notification = NotificationPractice(
-                recipient_id=current_thesis.author_id,
-                content=notification_content,
-            )
-            db.session.add(notification)
-            db.session.commit()
-            flash("Уведомление отправлено!", category="success")
+            _add_notification(current_thesis.author_id, notification_content)
         elif "submit_edit_title_button" in request.form:
             new_title = request.form["title_input"]
             notification_content = (
