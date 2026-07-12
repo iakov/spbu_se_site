@@ -127,7 +127,7 @@ Covers: technology stack choices, framework-specific decisions, implementation p
 
 **Exceptions**: Trivial one-line fixes (e.g., adding `.get("field", "")` default) that unblock tests can be applied during the coverage phase if they directly enable testing.
 
-**Current status**: 92% coverage achieved.
+**Current status**: 92% coverage achieved (as of 2026-07-04).
 
 ## [2026-07-12] Defensive Form Field Access
 
