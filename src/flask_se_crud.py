@@ -162,7 +162,9 @@ class CrudView:
             abort(404)
         form = self._build_form()
         if form.validate_on_submit():
-            obj = self.model()
+            obj = self.model() if self.model is not None else None
+            if obj is None:
+                abort(500)
             self._populate_obj(obj, form)
             db.session.add(obj)
             db.session.commit()
