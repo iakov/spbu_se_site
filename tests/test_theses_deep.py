@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=duplicate-code
 import io
 import json
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from conftest import _min_pdf, assert_ok
+from conftest import _approve_temp_thesis, _min_pdf, assert_ok
 
 
 class TestFetchThesesFilters:
@@ -437,7 +438,7 @@ class TestThesesAddTmpDeep:
         )
         db.session.add(t)
         db.session.commit()
-        resp = seeded_client.get(f"/theses_add_tmp?thesis_id={t.id}")
+        resp = _approve_temp_thesis(seeded_client, t.id)
         assert resp.status_code in (200, 302)
         updated = db.session.get(Thesis, t.id)
         assert updated.temporary is False
@@ -475,7 +476,7 @@ class TestThesesAddTmpDeep:
         )
         db.session.add(t)
         db.session.commit()
-        resp = seeded_client.get(f"/theses_add_tmp?thesis_id={t.id}")
+        resp = _approve_temp_thesis(seeded_client, t.id)
         assert resp.status_code in (200, 302)
         updated = db.session.get(Thesis, t.id)
         assert updated.temporary is False
@@ -493,7 +494,7 @@ class TestThesesAddTmpDeep:
         )
         db.session.add(t)
         db.session.commit()
-        resp = seeded_client.get(f"/theses_add_tmp?thesis_id={t.id}")
+        resp = _approve_temp_thesis(seeded_client, t.id)
         assert resp.status_code in (200, 302)
         assert db.session.get(Thesis, t.id).temporary is False
 

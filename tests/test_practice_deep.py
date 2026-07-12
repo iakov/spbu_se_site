@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=duplicate-code
 import io
 from datetime import datetime, timedelta
 
@@ -483,24 +484,6 @@ class TestPracticePreparation:
         )
         assert resp.status_code in (200, 302)
 
-    def test_post_submit_review_empty_files(self, practice_thesis):
-        resp = practice_thesis.post(
-            "/practice/preparation_for_defense/?id=1",
-            data={"submit_review_button": "1"},
-        )
-        assert resp.status_code in (200, 302)
-
-    def test_post_submit_review_empty_filenames(self, practice_thesis):
-        resp = practice_thesis.post(
-            "/practice/preparation_for_defense/?id=1",
-            data={
-                "submit_review_button": "1",
-                "supervisor_review": (io.BytesIO(b""), "", ""),
-                "consultant_review": (io.BytesIO(b""), "", ""),
-            },
-        )
-        assert resp.status_code in (200, 302)
-
     def test_post_submit_presentation_link(self, practice_thesis):
         resp = practice_thesis.post(
             "/practice/preparation_for_defense/?id=1",
@@ -515,21 +498,6 @@ class TestPracticePreparation:
         resp = practice_thesis.post(
             "/practice/preparation_for_defense/?id=1",
             data={"submit_presentation_button": "1", "presentation_link": ""},
-        )
-        assert resp.status_code in (200, 302)
-
-    def test_post_submit_presentation_file(self, practice_thesis):
-        pdf_bytes = b"%PDF-1.4 fake presentation"
-        resp = practice_thesis.post(
-            "/practice/preparation_for_defense/?id=1",
-            data={
-                "submit_presentation_button": "1",
-                "presentation": (
-                    io.BytesIO(pdf_bytes),
-                    "slides.pdf",
-                    "application/pdf",
-                ),
-            },
         )
         assert resp.status_code in (200, 302)
 

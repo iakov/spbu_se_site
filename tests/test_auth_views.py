@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=duplicate-code
 import io
 import json
 from unittest.mock import MagicMock, patch
 
 import pytest
-from conftest import assert_ok, assert_ok_or_redirect
+from conftest import _approve_temp_thesis, assert_ok, assert_ok_or_redirect
 
 
 class TestAuth:
@@ -553,7 +554,7 @@ class TestThesisAdminApproval:
         )
         db.session.add(t)
         db.session.commit()
-        resp = seeded_client.get(f"/theses_add_tmp?thesis_id={t.id}")
+        resp = _approve_temp_thesis(seeded_client, t.id)
         assert resp.status_code in (200, 302)
 
     def test_delete_temp_thesis(self, seeded_client):

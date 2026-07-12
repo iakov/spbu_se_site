@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=duplicate-code
 from unittest.mock import MagicMock, patch
 
 from conftest import assert_ok

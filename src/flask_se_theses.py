@@ -12,7 +12,7 @@ import fitz
 from flask import jsonify, redirect, render_template, request, url_for
 from transliterate import translit
 
-from flask_se_config import SECRET_KEY_THESIS
+from flask_se_config import SECRET_KEY_THESIS, type_id_string
 from se_forms import ThesisFilter
 from se_models import Courses, Staff, Thesis, Users, Worktype, db
 
@@ -248,17 +248,6 @@ def post_theses():
     presentation_filename = None
     supervisor_review_filename = None
     reviewer_review_filename = None
-
-    type_id_string = [
-        "",
-        "Bachelor_Report",
-        "Bachelor_Thesis",
-        "Master_Thesis",
-        "Autumn_practice_2nd_year",
-        "Spring_practice_2nd_year",
-        "Autumn_practice_3rd_year",
-        "Spring_practice_3rd_year",
-    ]
 
     if "thesis_text" in request.files:
         thesis_text = request.files["thesis_text"]

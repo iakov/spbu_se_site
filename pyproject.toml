@@ -57,6 +57,16 @@ filterwarnings = ["ignore::ResourceWarning"]
 [tool.coverage.run]
 omit = ["src/thesesImport.py", "src/wsgi.py", "src/extract_text.py", "src/static/files/*"]
 
+[tool.pylint.main]
+ignore-paths = [".*migrations.*", ".*\\.venv.*", ".*templates.*", ".*static.*"]
+
+[tool.pylint.similarities]
+ignore-comments = true
+ignore-docstrings = true
+ignore-imports = true
+ignore-signatures = true
+min-similarity-lines = 6
+
 [build-system]
 requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"

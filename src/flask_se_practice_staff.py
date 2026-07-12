@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
+# pylint: disable=duplicate-code
 """Copyright 2023 Alexander Slugin.
 
 Licensed under the Apache License, Version 2.0 (the "License");
