@@ -376,7 +376,7 @@ login_manager.init_app(app)
 
 # Init markdown filter
 @app.template_filter("markdown")
-def _render_markdown(text: str) -> str:
+def render_markdown(text: str) -> str:
     return _markdown.markdown(text, extensions=["tables"])
 
 
