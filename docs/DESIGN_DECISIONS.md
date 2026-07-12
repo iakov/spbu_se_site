@@ -31,7 +31,7 @@ Covers: technology stack choices, framework-specific decisions, implementation p
 **Rationale**:
 
 - Docker image stays smaller (no uv binary, no Rust toolchain)
-- CI on `current` matches prod exactly (pip, Python 3.9)
+- CI on `current` matches prod exactly (pip, Python 3.13)
 - No runtime coupling to uv — prod can be deployed anywhere pip works
 - uv is a dev tool only, like ruff or pre-commit
 
