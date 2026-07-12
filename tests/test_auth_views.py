@@ -531,6 +531,7 @@ class TestThesisAdminApproval:
         Path("static/tmp/texts").mkdir(parents=True, exist_ok=True)
         Path("static/thesis/texts").mkdir(parents=True, exist_ok=True)
         Path("static/tmp/texts/test.pdf").write_text("")
+        Path("static/thesis/texts/test.pdf").unlink(missing_ok=True)
 
         t = _make_temp_thesis("Test", "test.pdf")
         resp = _approve_temp_thesis(seeded_client, t.id)
