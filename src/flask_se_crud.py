@@ -2,6 +2,7 @@
 
 import csv
 import io
+from contextlib import suppress
 
 from flask import Response, abort, redirect, render_template, request, url_for
 from flask_wtf import FlaskForm
@@ -121,11 +122,11 @@ class CrudView:
         sort = request.args.get("sort", self._get_pk(), type=str)
         desc = request.args.get("desc", 0, type=int)
         query = self._list_query()
-        order = (
-            getattr(getattr(self.model, sort, None), "desc", lambda: None)()
-            if desc
-            else getattr(getattr(self.model, sort, None), "asc", lambda: None)()
-        )
+        sort_col = getattr(self.model, sort, None)
+        order = None
+        if sort_col is not None:
+            with suppress(Exception):
+                order = sort_col.desc() if desc else sort_col.asc()
         if order is not None:
             query = query.order_by(order)
         total = query.count()

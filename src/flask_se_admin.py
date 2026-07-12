@@ -28,6 +28,7 @@ def _inaccessible():
 
 class AdminIndexView(CrudView):
     def __init__(self, app):
+        super().__init__(app, None, endpoint="admin")
         app.add_url_rule("/admin/", endpoint="admin.index", view_func=self.index, methods=["GET"])
 
     def index(self):
