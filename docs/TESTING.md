@@ -95,8 +95,6 @@ Every xfailed test must have a documented reason linked to a `TODO.md` or `CODE_
 
 **Total xfail markers in code**: 13 (3 strict=True + 10 strict=False)
 
-**Previously fixed this session**: PyMuPDF dummy PDF (5), Google OAuth login redirect (1), practice_admin file I/O races (3), practice_staff auth race (1), theses xdist race (1 — `test_post_bad_type_id`), thesesImport module state (22), os.rename+Whoosh rewrite (3), nonexistent report_id guard (1), query.get→db.session.get migration (32), mojibake strings (2), admin xfail strict=True (3), ci.yml split+3.13 migration (1). Total: 77 xfails/items resolved.
-
 ### 4a. Intermittent CI failures — xfail strategy
 
 Tests that pass locally but fail intermittently on CI:
@@ -110,7 +108,7 @@ Do NOT use `strict=False` for failures that reproduce locally — those are real
 
 ## 5. Xpassed Tests
 
-Tests that pass locally but have `xfail` markers (all `strict=False`, so xpass is non-fatal): interminent CI failures that happen to pass on this machine. Tracked in §4a's intermittent CI table. Last run: 8 xpassed.
+Tests that pass locally but have `xfail` markers (all `strict=False`, so xpass is non-fatal): intermittent CI failures that happen to pass on this machine. Tracked in §4a's intermittent CI table. Check xpass count via `pytest --tb=no -q 2>&1 | Select-String "xpassed"`.
 
 ## 6. Long-Term Testing Gaps
 
