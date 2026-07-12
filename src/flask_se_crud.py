@@ -41,8 +41,9 @@ class CrudView:
     def __init__(self, app, model, endpoint, name=None):
         self.model = model
         self.endpoint = endpoint
-        self.name = name or model.__name__
-        self._register_routes(app)
+        self.name = name or (model.__name__ if model else endpoint)
+        if model:
+            self._register_routes(app)
 
     def _register_routes(self, app):
         app.add_url_rule(
