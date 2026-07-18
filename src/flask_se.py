@@ -599,9 +599,12 @@ _LEGACY_REDIRECTS = {
 }
 
 for _legacy_path, _endpoint in _LEGACY_REDIRECTS.items():
+    _ep_name = "legacy_" + _legacy_path.strip("/").replace("/", "_").replace(".", "_").replace(
+        "-", "_"
+    )
     app.add_url_rule(
         _legacy_path,
-        endpoint=f"legacy_{_endpoint}",
+        endpoint=_ep_name,
         view_func=lambda endpoint=_endpoint: redirect(url_for(endpoint), 301),
     )
 
