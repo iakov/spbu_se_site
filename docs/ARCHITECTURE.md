@@ -97,10 +97,6 @@ the import pipeline (`extract_text.py`, `thesesImport.py`) never fire jobs.
 - VK OAuth: redirect -> callback -> user lookup/create -> login
 - Google OAuth: redirect -> callback -> user lookup/create -> login
 
-### Static Site Generation
-
-Frozen-Flask can build the entire site to a static directory. See `docs/DESIGN_DECISIONS.md` for technology choices.
-
 ## Template Structure
 
 Templates use a **Quick Website** bootstrap-based theme with four base layouts:
