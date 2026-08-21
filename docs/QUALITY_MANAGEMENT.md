@@ -29,14 +29,14 @@ Four tiers, from local convenience to production gate:
 |------|------|-----------|----------------|-----------|
 | Pre-commit | Formatters, auto-fix | Polish, skip allowed | ~1s | None — convenience |
 | Pre-push | Requirements, actionlint, uv lock, format, lint, types | Early feedback | ~33s (Windows); Linux: run manually, hook is PowerShell-only | Informational — CI overrides |
-| CI | Full test suite, format, types | Authority | ~3min | Source of truth |
+| CI | Full test suite, format, types | Authority | ~10min | Source of truth |
 | Offline review | Complexity, dead code, security | Deep analysis | Variable | Advisory — user decides |
 
 ### Motivation
 
 **Pre-commit as polish**: Formatting noise distracts code review from logic. Auto-fix catches it at the last possible moment before commit. If the hook fails, the user can `--no-verify` — formatting is not a quality gate, it's convenience.
 
-**Pre-push as early feedback**: A format or type error caught at push time costs ~33s (Windows). The same error caught by CI costs ~3min plus a full round-trip. The fail-fast chain ensures format failure aborts before later checks — no wasted time. Pre-push is a courtesy to the developer, not an authority. **Platform note:** the format+lint step is PowerShell-only (`.pre-commit-config.yaml` `pre-push-fast-checks`); on Linux the hook errors out, so run the equivalent checks manually (see `AGENTS.md` §Pre-push) and log the `--no-verify` in the retrospective.
+**Pre-push as early feedback**: A format or type error caught at push time costs ~33s (Windows). The same error caught by CI costs ~10min plus a full round-trip. The fail-fast chain ensures format failure aborts before later checks — no wasted time. Pre-push is a courtesy to the developer, not an authority. **Platform note:** the format+lint step is PowerShell-only (`.pre-commit-config.yaml` `pre-push-fast-checks`); on Linux the hook errors out, so run the equivalent checks manually (see `AGENTS.md` §Pre-push) and log the `--no-verify` in the retrospective.
 
 **CI as authority**: The test suite decides whether code ships. Pre-commit and pre-push are fallible — CI is not. Every check that matters must be in CI. Checks in pre-push that are not in CI are advisory only.
 
@@ -102,7 +102,7 @@ Standard techniques for systematic quality management, each with a dedicated art
 | Test count | `pytest --tb=no -q` | Suite size trend — drift signals missing or broken tests |
 | Coverage % | `pytest --cov=src --cov-report=term-missing` | Coverage target compliance for production modules |
 | xfail count | `pytest --tb=no -q` | Known-failure debt — rising count means new blockers |
-| pyright ignores | `basedpyright src/` | Type debt — 92 remaining, tracked per module |
+| pyright ignores | `basedpyright src/` | Type debt — 93 remaining, tracked per module |
 | CI status | `gh run list --branch staging --limit 1 --json conclusion` | Gate health — red blocks all work |
 
 ### When to refresh

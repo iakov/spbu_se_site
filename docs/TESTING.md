@@ -115,7 +115,6 @@ What we explicitly do not test and why:
 
 | Area | Why Not Tested | Validated By |
 |------|----------------|--------------|
-| Static site generation (Frozen-Flask) output | Build success is sufficient — output correctness is structural | Manual build check |
 | Email delivery | SMTP is production-only, mocked in all tests | Production monitoring |
 | Password security (scrypt) | Python 3.13 OpenSSL build lacks scrypt — mocked in all tests | Prod environment has different OpenSSL |
 | UI/visual rendering | No browser testing framework configured | Manual review per release |

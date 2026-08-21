@@ -180,6 +180,5 @@ Home (/)
 - **Application server**: uWSGI (4 processes, 2 threads, socket :8080)
 - **Database**: SQLite (`se.db`)
 - **Static content**: served directly by nginx
-- **Static site generation**: Frozen-Flask for full static export
 - **Containerization**: Docker (Flask container + nginx container)
 - **File storage**: Local filesystem under `src/static/`

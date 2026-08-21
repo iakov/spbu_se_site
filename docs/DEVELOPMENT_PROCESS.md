@@ -68,8 +68,6 @@ Everything in `docs/GIT_FLOW.md`, `docs/TESTING.md`, `docs/TOOLING.md`, `.pre-co
 
 Design decisions about deliberate deviations are recorded in `docs/DESIGN_DECISIONS.md`.
 
-Covers: planning, testing, linting, code review, release, dependencies, session lifecycle, workflow discipline. Does not cover: CLI commands, architecture design, AI tooling, version control — see `docs/GIT_FLOW.md`.
-
 ## 0. CLI Quick Reference
 
 ```bash
@@ -80,7 +78,6 @@ uv run python src/wsgi.py                     # run via WSGI
 uv run pytest                                 # run tests (full suite ~600s with -n auto)
 uv run ruff check src/                        # lint
 uv run ruff format src/                       # format
-uv run python src/flask_se.py build               # build static site (Frozen-Flask)
 ```
 
 ## 0.1 Doc-to-Code Sync
@@ -193,7 +190,7 @@ An agent may propose `git push --no-verify` only when:
 1. The user gives a direct, unbiased instruction (states a goal, not a method)
 1. The agent clearly documents the risk before proceeding
 
-#### CI (async, ~10min)
+#### CI (async, ~600s / ~10min)
 
 pytest runs on CI, not in pre-push. See `docs/AI_AGENTS.md` §CI discipline for when to check CI status.
 
@@ -462,7 +459,6 @@ Versioning is date-based — every release is tagged `vYYYY.MM.DD` (see
    changelog (dependencies table, major changes, contributors, compare link).
    Drafts live in `.tmp/` (gitignored) — never at the repo root.
 1. Update version references if any
-1. Build static site if needed: `uv run python src/flask_se.py build`
 1. Update Dockerfile if dependency changes
 1. Tag and push to the canonical repo (GPG-signed):
    ```bash
