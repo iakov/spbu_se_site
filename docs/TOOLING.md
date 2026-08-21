@@ -61,7 +61,7 @@ Prefer `config_overrides` over patching `flask_se_config` module globals. The on
 
 ### Auto-migrate on boot (`SE_AUTO_MIGRATE`)
 
-`docker/entrypoint.sh` runs `python flask_se.py migrate` on every boot (default on; set `SE_AUTO_MIGRATE=0` in compose to opt out and run the same command manually). `flask_se.auto_migrate()` → `ensure_schema()`:
+`docker/entrypoint.sh` runs `python flask_se.py migrate` on every boot (default on; set `SE_AUTO_MIGRATE=0` in compose to opt out and run the same command manually). That calls `flask_se.ensure_schema()`:
 
 - **Fresh DB** (no `databases/se.db`) → `init_db()` (`db.create_all()` + seed). Models are the schema source of truth — no Alembic.
 - **Existing DB** → backs up `se.db` to `se_backup_<date>.db`, then `ensure_schema()`: `db.create_all()` for missing tables + per-table `PRAGMA table_info` diff against the model, `ALTER TABLE ... ADD COLUMN` for each missing column.
@@ -385,19 +385,19 @@ Set `target-version` in `[tool.ruff]` to match minimum supported Python. Affects
 
 ## vulture (dead-code gate)
 
-Gated in pre-push + both CI workflows (parity). The `--min-confidence 100` level is deliberate: at default confidence vulture flags hundreds of framework false positives (SQLAlchemy model columns, Alembic `upgrade`/`downgrade`, Flask route functions, WTForms fields) that it cannot resolve statically — gating there would make the check noise and get disabled. At 100% only true positives surface (currently only unused callback params).
+Gated in pre-push + both CI workflows (parity). The `--min-confidence 100` level is deliberate: at default confidence vulture flags hundreds of framework false positives (SQLAlchemy model columns, Flask route functions, WTForms fields) that it cannot resolve statically — gating there would make the check noise and get disabled. At 100% only true positives surface (currently only unused callback params).
 
 ```bash
-uv run vulture src/ --min-confidence 100 --exclude src/migrations,src/thesesImport.py --ignore-names is_created,revision
+uv run vulture src/ --min-confidence 100 --exclude src/thesesImport.py --ignore-names is_created
 ```
 
-- `migrations/` and `thesesImport.py` (legacy scraper, already in the coverage omit) are excluded.
-- `is_created`/`revision` are framework-contract callback params (Flask-Admin `on_model_change`, Alembic `process_revision_directives`) that ruff already suppresses with `# noqa: ARG002`.
+- `thesesImport.py` (legacy scraper, already in the coverage omit) is excluded.
+- `is_created` is a framework-contract callback param (Flask-Admin `on_model_change`) that ruff already suppresses with `# noqa: ARG002`.
 - To add new dead code to the exclusion, widen `--ignore-names` or `--exclude` with a documented reason, not to hide real findings.
 
 ## pylint (duplicate-code gate)
 
-`uv run pylint --disable=all --enable=similarities src/ tests/` runs in pre-push + both CI workflows. `min-similarity-lines = 6` in `pyproject.toml` `[tool.pylint.similarities]`; migrations/templates/static are ignored. Keeps the test consolidation honest — consolidation removes duplication, never adds it.
+`uv run pylint --disable=all --enable=similarities src/ tests/` runs in pre-push + both CI workflows. `min-similarity-lines = 6` in `pyproject.toml` `[tool.pylint.similarities]`; templates/static are ignored. Keeps the test consolidation honest — consolidation removes duplication, never adds it.
 
 ## lxml dependency for BeautifulSoup HTML parsing
 
@@ -415,11 +415,11 @@ Importing from `pip._vendor` is fragile — it depends on pip being installed an
 
 ### Coverage exclusions
 
-Exclude scripts that run once (importers, migrations) from coverage for realistic metrics:
+Exclude one-shot scripts (importers, entrypoints) from coverage for realistic metrics:
 
 ```toml
 [tool.coverage.run]
-omit = ["src/thesesImport.py", "src/migrations/*"]
+omit = ["src/thesesImport.py", "src/wsgi.py", "src/extract_text.py", "src/static/files/*"]
 ```
 
 ### Coverage metrics accumulate across runs

@@ -113,11 +113,11 @@ try:
         old_uri = app.config["SQLALCHEMY_DATABASE_URI"]
         old_engine = db.engines.get(None)
         try:
-            fsc.SQLITE_DATABASE_NAME = "auto.db"                     # auto_migrate reads these globals
+            fsc.SQLITE_DATABASE_NAME = "auto.db"                     # ensure_schema reads these globals
             fsc.SQLITE_DATABASE_PATH = _dir
             app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{Path(_dir) / 'auto.db'}"
             db.engines[None] = create_engine(f"sqlite:///{Path(_dir) / 'auto.db'}")  # db.engines is a dict at runtime
-            auto_migrate()
+            ensure_schema()
             assert "users" in inspect(db.engine).get_table_names()
         finally:
             fsc.SQLITE_DATABASE_NAME, fsc.SQLITE_DATABASE_PATH = old_name, old_path
