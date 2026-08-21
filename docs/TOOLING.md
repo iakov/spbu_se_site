@@ -59,6 +59,16 @@ app = create_app(config_overrides={"SQLALCHEMY_DATABASE_URI": "sqlite:///..."})
 
 Prefer `config_overrides` over patching `flask_se_config` module globals. The one remaining global patch in `tests/conftest.py` (`flask_se_config.SQLITE_DATABASE_*`) exists only because `init_db()` reads those globals directly (backup path), not because of app construction. The scheduler must be disabled in tests via `SE_START_SCHEDULER=0` before `import flask_se` (see §APScheduler below).
 
+### Auto-migrate on boot (`SE_AUTO_MIGRATE`)
+
+`docker/entrypoint.sh` runs `python flask_se.py migrate` on every boot (default on; set `SE_AUTO_MIGRATE=0` in compose to opt out and run the same command manually). `flask_se.auto_migrate()` → `ensure_schema()`:
+
+- **Fresh DB** (no `databases/se.db`) → `init_db()` (`db.create_all()` + seed). Models are the schema source of truth — no Alembic.
+- **Existing DB** → backs up `se.db` to `se_backup_<date>.db`, then `ensure_schema()`: `db.create_all()` for missing tables + per-table `PRAGMA table_info` diff against the model, `ALTER TABLE ... ADD COLUMN` for each missing column.
+- **Column-addability**: a missing column is auto-added when nullable OR has a `server_default`; otherwise a constant default is synthesized by type (Boolean→0, Integer→0, Float/Numeric→0.0, String/Text→''); exotic non-nullable types (DateTime) → added nullable with a warning. A missing column with UNIQUE/PK/FK → fail-loud (SQLite cannot `ADD COLUMN` constraints); the developer fixes the model, never ops.
+
+No version table and no ops pre-flight: column-presence IS the version marker, checked against the real DB every boot. `Users.deleted` must keep `server_default=sa.false()` so `ADD COLUMN ... NOT NULL` can backfill rows. See `docs/DESIGN_DECISIONS.md` [2026-08-21] for the full rationale.
+
 ### Per-test temp directories
 
 Each test fixture that needs a database must create its own `tempfile.mkdtemp()`. Shared global paths cause cross-test pollution — one test's teardown breaks the next test's setup.
