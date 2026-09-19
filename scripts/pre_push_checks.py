@@ -65,6 +65,10 @@ CHECKS: list[tuple[str, list[str]]] = [
             "0",
         ],
     ),
+    (
+        "person-names in published docs",
+        ["uv", "run", "python", "scripts/check_person_names.py"],
+    ),
 ]
 
 

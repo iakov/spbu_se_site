@@ -30,6 +30,7 @@ CLAUDE.md defers to this file. This file defers to `docs/`.
   - `uv run mdformat --check <all-changed-docs>` immediately after the commit
   - `uv run pre-commit run --all-files --hook-stage pre-push` before the push
   - If mdformat fails, fix and amend the commit; do not push unformatted code
+- **No person names in published docs** — RETROSPECTIVES.md, release notes, and any doc in the public repo must NOT contain real person names, GitHub usernames, or emails. Pre-push check: `rg '@|^Contributors|.*<.*@.*>'` on changed docs. Use placeholder roles instead ("the user", "site admin", "ops team").
 - **`--admin` merge discipline** — `gh pr merge --admin --squash` bypasses all branch protection (CI checks, review requirements). Permitted ONLY:
   1. When CI is **already green** on the PR (verify via `gh pr checks <N>` before merge)
   1. Or on explicit user order (must acknowledge the bypass risk aloud)
